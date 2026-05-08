@@ -1,93 +1,132 @@
 import random
 import os
 import pyttsx3
+import speech_recognition as sr
+import webbrowser
 
-#engine = pyttsx3.init()
-#engine.setProperty("rate",170) #we can set speed , voice high or low
+def take_command():
+    r = sr.Recognizer()   #sr=short form of speech recognize
+    try:
+        with sr.Microphone() as source:   #sr=source=microphone
+            print("Listening...")
+            r.adjust_for_ambient_noise(source, duration=0.5)
+            r.pause_threshold = 1.2        #not end sentence to early 
+            audio = r.listen(source, timeout=5, phrase_time_limit=5)
+            
+        command = r.recognize_google(audio)     # # convert text into audio by this send audio to google recognizer
+        print("You:", command)
+        return command.lower()
+    except sr.WaitTimeoutError:
+        print("No speech detected")
+        return ""
+    except sr.UnknownValueError:      #voice cant understand by google
+        print("Could not understand audio")
+        return ""
+    except sr.RequestError:        #no internet
+        print("Internet issue")
+        return ""                       #return empty string bcz of loop continue
 
-
-# voice function
 
 def speak(text):
-    engine = pyttsx3.init()
+    try:
+        engine = pyttsx3.init()
+        voices = engine.getProperty('voices')
+        if len(voices) > 1:
+            engine.setProperty('voice', voices[1].id)   # female voice
+        else:
+            engine.setProperty('voice', voices[0].id)   # fallback if only 1 voice
+        engine.setProperty('rate', 145)
+        engine.say(text)
+        engine.runAndWait()
+        engine.stop()
+    except Exception as e:
+        print(f"Voice error: {e}")
 
-    voices = engine.getProperty('voices')
-
-    engine.setProperty('voice', voices[1].id)     # chnge to female
-
-    engine.setProperty('rate',155)      #as i say we can change speed like 200 very fast or 130 very slow...
-
-
-    engine.say(text)
-    engine.runAndWait()
-    engine.stop()
-    
-
-#Chatbot Response    
+ #chatbot responses
 responses = {
-    "hi":["hi","hello","hey","bhai","yrr"],
-    "hello":["hello sir","yes master","ready for command sir","ready master"],
-    "hi bro":["haan bhai bol na","bol na yrr","bata","problem kya hai","mat kr bhai mere v family hai"],
-
-#how_are_you = ["bhai kaise ho", "or bhai kya hal", "kaise ho", "how are you", "wassup", "or bhai"]
-"how are you":["mst bhai,thu bta","arrae ek number yrr","im good","mst","i'm fine","All good!"],
-
-#question = ["bhai thu hai kon?", "who are you", "what is your name", "naam kya hai?", "kya naam hai?", "whats your name"]
-"who are you":["Chatbot bolte apun ko","I Am a Bot","Chatbot","i'm Vivek Chatbot"],
-
-#jokes = ["tell me a joke", "joke", "ek mazak ki baat batau", "ek funny joke hai"]
-"joke":["I promise I’m not spying on you","math is hard, trust me", "Why do programmers hate in nature? Too many bugs 🐛","Haha 😂"] ,
-"vivek":["He is my master"],
-"tanisha":["Vivek loves her 😉"],
-"stream":["Opening stream setup"],
-"valorant":["Launching Valorant"]
+    "hi": ["hi", "hello", "hey"],
+    "hello": ["hello sir", "yes master", "ready for command sir", "ready master"],
+    "how are you": ["mst bhai thu bta", "im good", "mst", "i'm fine", "All good!"],
+    "who are you": ["Chatbot bolte apun ko", "I Am a Bot", "i'm Vivek Chatbot"],
+    "joke": ["I promise I'm not spying on you", "math is hard, trust me", "Why do programmers hate nature? Too many bugs"],
+    "vivek": ["He is my master"],
+    "tanisha": ["Vivek loves her"],
+    "stream": ["Opening OBS for you master"],
+    "valorant":["Opening valorant sir"]
 }
-  
- # Apps like you want open
 
+#app u want to open
 apps = {
-    "notepad":"notepad.exe",
-    "calculator":"calc.exe",
-    "paint":"mspaint.exe",
-    "cmd":"cmd.exe",
-    "valorant":r"D:\game\Riot Games\Riot Client\RiotClientServices.exe"      #r=raw string fix, without r "\" means new line so we use r to no next line ..just keep the string exactly as typed...
-}  
+    "notepad": "notepad.exe",
+    "calculator": "calc.exe",
+    "paint": "mspaint.exe",
+    "cmd": "cmd.exe",
+    "valorant": r"D:\game\Riot Games\Riot Client\RiotClientServices.exe",
+    "stream" :r"C:\Program Files\obs-studio\bin\64bit\obs64.exe"
+}
+ 
+ #website to search
+websites = {
+    "youtube": "https://www.youtube.com",
+    "google": "https://www.google.com",
+    "github": "https://github.com/ins-lu3fer"
+}
 
-#main loops
 
+#  MAIN LOOP 
 while True:
-    user = input("You: ").lower()
+    user = take_command()
 
-    found = False               #flag usually track somthing like true or false..
+    if not user:
+        continue                    # skip empty input
 
-#open apps
-    for app in apps:
-        if app in user:
-            os.startfile(apps[app])
+    found = False          #flag=found somthing to check like true or false
 
-            bot_response = "Opening" + app
-            print("Bot:  ",bot_response)
-            speak(bot_response)
-
-            found = True
-            break
-
-#chat responses
-    for key in responses:
-        if key in user:         #this checks keyword exists inside sentence...
-            response = random.choice(responses[key])
-
-            print("Bot: ",response)
-            speak(response)
-
-            found = True
-            break
-
-    if user =="bye":
-        print("Bot: chala ja BSDK!") 
-        speak("Chala ja BSDK")   
+    # 1. Bye check
+    if "bye" in user:
+        print("Bot: chala ja BSDK!")
+        speak("Chala ja BSDK")
         break
 
-    if not found and user !="bye":
-        print("Bot: mt kar lala mt kar ")
+    # 2. Open websites
+    for site in websites:
+        if site in user:
+            webbrowser.open(websites[site])
+            print("Bot: Opening", site)
+            speak("Opening " + site)
+            found = True
+            break
+
+    # 3. Search Google
+    if not found and "search" in user:
+        query = user.replace("search", "").strip()
+        url = f"https://www.google.com/search?q={query}"
+        webbrowser.open(url)
+        print("Bot: Searching", query)
+        speak("Searching " + query)
+        found = True
+
+    # 4. Open apps
+    if not found:
+        for app in apps:
+            if app in user:
+                os.startfile(apps[app])
+                print("Bot: Opening", app)
+                speak("Opening " + app)
+                found = True
+                break
+
+    # 5. Chat responses
+    if not found:
+        for key in responses:
+            if key in user:
+                response = random.choice(responses[key])
+                print("Bot:", response)
+                speak(response)
+                found = True
+                break
+
+    # 6. No match
+    if not found:
+        print("Bot: mt kar lala mt kar")
         speak("mat kr lala mt kar")
