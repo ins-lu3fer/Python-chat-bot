@@ -3,6 +3,7 @@ import os
 import pyttsx3
 import speech_recognition as sr
 import webbrowser
+import datetime
 
 def take_command():
     r = sr.Recognizer()   #sr=short form of speech recognize
@@ -84,8 +85,8 @@ while True:
 
     # 1. Bye check
     if "bye" in user:
-        print("Bot: chala ja BSDK!")
-        speak("Chala ja BSDK")
+        print("Bot: Phali fursat se nikal!")
+        speak("Have a Goodday!")
         break
 
     # 2. Open websites
@@ -125,8 +126,25 @@ while True:
                 speak(response)
                 found = True
                 break
+    #6. time
+    if "time" in user:
+        current_time = datetime.datetime.now().strftime("%I:%M %p")
 
-    # 6. No match
+        print("Bot:", current_time)
+        speak(f"The time is{current_time}")
+
+        found=True   
+
+    # 7.date
+    if "date" in user:
+        today = datetime.datetime.now().strftime("%d %B %Y")
+        print("Bot:", today)
+        speak(f"Today's date is {today}")
+
+        found = True   
+
+
+    # 8. No match
     if not found:
         print("Bot: mt kar lala mt kar")
-        speak("mat kr lala mt kar")
+        speak("I dont understand")
