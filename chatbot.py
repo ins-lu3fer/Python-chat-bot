@@ -163,9 +163,17 @@ while True:
 
         found = True    
 
+     #10.today whathappning in the world
+    elif "today" in user:
+        webbrowser.open("https://news.google.com")
+
+        print("Bot: Here is What is happening today")
+        speak("Here is what is happening today")
+
+        found = True
+
     
-    
-    # 10. No match
+    # 11. No match
     if not found:
         print("Bot: mt kar lala mt kar")
         speak("I dont understand")
