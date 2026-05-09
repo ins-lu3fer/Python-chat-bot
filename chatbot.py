@@ -172,8 +172,29 @@ while True:
 
         found = True
 
+     # 11.news
+    elif "today" in user:
+        webbrowser.open("https://news.google.com")
+
+        print("Bot: Here is what is happening today")
+        speak("Here is what is happening today")
+
+        found = True
+        
+     #12.music
+    elif "play" in user:
+        song = user.replace("play", "").strip()    #.strip remove extra space , remove play EX - play song and remove play only search song
+        url = f"https://www.youtube.com/results?search_query={song}"   #find song on yt
+
+        webbrowser.open(url)
+
+        print("Bot: Playing", song)
+        speak(f"Playing {song}")
+
+        found = True   
+
     
-    # 11. No match
+    # 13. No match
     if not found:
         print("Bot: mt kar lala mt kar")
         speak("I dont understand")
