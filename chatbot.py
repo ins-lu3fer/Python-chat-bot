@@ -143,8 +143,29 @@ while True:
 
         found = True   
 
+    
+    # 8.day
+    elif"What day" in user or "day today" in user:
+        day = datetime.datetime.now().strftime("%A")
 
-    # 8. No match
+        print("Bot",day)
+        speak(f"Today is {day}")
+
+        found = True 
+
+
+    # 9.whether
+    elif"weather" in user:
+        webbrowser.open("https://www.google.com/search?q=weather")
+
+        print("Bot: Opening weather")
+        speak("Opening weather")
+
+        found = True    
+
+    
+    
+    # 10. No match
     if not found:
         print("Bot: mt kar lala mt kar")
         speak("I dont understand")
