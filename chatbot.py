@@ -203,8 +203,8 @@ while True:
 
        found = True    
 
+
     #13.notes saved
-    
     elif "remember" in user or "forget" in user:
       note = user.replace("remember", "").replace("i forget to", "").strip()
 
@@ -216,8 +216,28 @@ while True:
 
       found = True
 
+
+     #14.calculator
+    elif "calculate" in user:
+      question = user.replace("calculate", "")  # remove the word "calculate" first
+      question = question.replace("plus", "+")
+      question = question.replace("minus", "-")
+      question = question.replace("times", "*")
+      question = question.replace("divided by", "/")
+      question = question.strip()
+
+    try:
+        result = eval(question)
+        print("Bot:", result)
+        speak(f"The answer is {result}")
+    except Exception as e:
+        print("Bot: Sorry, I couldn't calculate that")
+        speak("Sorry, I couldn't calculate that")
+
+    found = True
+
     
-    #14. No match
+    #15. No match
     if not found:
         print("Bot: I dont understand")
         speak("I dont understand")
