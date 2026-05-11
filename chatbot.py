@@ -184,9 +184,40 @@ while True:
         speak(f"Playing {song}")
 
         found = True   
+ 
+
+ #12.show notes
+    elif "show notes" in user or "notes" in user:
+       try:
+          with open("notes.txt", "r") as file:      #   'as file' = create variable file ,with'= open file temproraly and automatic close it after block
+            notes = file.read()                   #only reAD note.txt file
+
+          print("Your Notes:")
+          print(notes)
+
+          speak("Showing your notes")
+
+       except FileNotFoundError:
+          print("No notes found")
+          speak("No notes found")
+
+       found = True    
+
+    #13.notes saved
+    
+    elif "remember" in user or "forget" in user:
+      note = user.replace("remember", "").replace("i forget to", "").strip()
+
+      with open("notes.txt", "a") as file:
+        file.write(note + "\n")
+
+      print("Saved:", note)
+      speak("Notes saved")
+
+      found = True
 
     
-    # 12. No match
+    #14. No match
     if not found:
         print("Bot: I dont understand")
         speak("I dont understand")
