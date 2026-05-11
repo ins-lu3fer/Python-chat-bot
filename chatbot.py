@@ -84,7 +84,7 @@ while True:
     found = False          #flag=found somthing to check like true or false
 
     # 1. Bye check
-    if "bye" in user:
+    if "bye" in user or "goodbye" in user:
         print("Bot: Phali fursat se nikal!")
         speak("Have a Goodday!")
         break
@@ -155,7 +155,7 @@ while True:
 
 
     # 9.whether
-    elif"weather" in user:
+    elif"weather" in user or "forecast" in user or"temperature" in user :
         webbrowser.open("https://www.google.com/search?q=weather")
 
         print("Bot: Opening weather")
@@ -164,7 +164,7 @@ while True:
         found = True    
 
      #10.today whathappning in the world
-    elif "today" in user:
+    elif "today" in user or "happning" in user or "today" in user:
         webbrowser.open("https://news.google.com")
 
         print("Bot: Here is What is happening today")
@@ -172,18 +172,10 @@ while True:
 
         found = True
 
-     # 11.news
-    elif "today" in user:
-        webbrowser.open("https://news.google.com")
-
-        print("Bot: Here is what is happening today")
-        speak("Here is what is happening today")
-
-        found = True
-        
-     #12.music
-    elif "play" in user:
+     #11.music
+    elif "play" in user or "song" in user :
         song = user.replace("play", "").strip()    #.strip remove extra space , remove play EX - play song and remove play only search song
+        song = user.replace("can you play", "").strip()
         url = f"https://www.youtube.com/results?search_query={song}"   #find song on yt
 
         webbrowser.open(url)
@@ -194,7 +186,7 @@ while True:
         found = True   
 
     
-    # 13. No match
+    # 12. No match
     if not found:
-        print("Bot: mt kar lala mt kar")
+        print("Bot: I dont understand")
         speak("I dont understand")
